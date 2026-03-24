@@ -15,7 +15,12 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@wxt-dev/module-react": "^1.2.2",
     "typescript": "^5.9.3",
     "wxt": "^0.20.20"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   }
 }
