@@ -10,6 +10,13 @@ export default defineContentScript({
     if (strategy) {
       console.log(`Shelfmark Search: Strategy matched: ${strategy.name}`);
 
+      // Listen for requests from the popup
+      browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.type === "GET_BOOK_DETAILS") {
+          sendResponse(strategy.getBookDetails());
+        }
+      });
+
       // Hardcover and other modern web apps might load content dynamically
       const inject = async () => {
         try {

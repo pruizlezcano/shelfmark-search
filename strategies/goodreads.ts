@@ -1,4 +1,5 @@
 import { storage } from "#imports";
+import { shelfmarkUrl } from "@/lib/shelfmarkUrl";
 import { SearchStrategy, BookDetails } from "./index";
 
 export class GoodreadsStrategy implements SearchStrategy {
@@ -34,13 +35,7 @@ export class GoodreadsStrategy implements SearchStrategy {
       return;
     }
 
-    const queryParams = new URLSearchParams({
-      q: details.title,
-      author: details.author || "",
-      content_type: details.contentType
-    });
-
-    const searchUrl = `${baseUrl}/?${queryParams.toString()}`;
+    const searchUrl = shelfmarkUrl(baseUrl, details);
 
     const buttonHtml = `
       <div class="BookActions__button shelfmark-button">

@@ -1,4 +1,5 @@
 import { storage } from "#imports";
+import { shelfmarkUrl } from "@/lib/shelfmarkUrl";
 import { SearchStrategy, BookDetails } from "./index";
 
 export class HardcoverStrategy implements SearchStrategy {
@@ -31,12 +32,7 @@ export class HardcoverStrategy implements SearchStrategy {
       return;
     }
 
-    const queryParams = new URLSearchParams({
-      q: details.title,
-      author: details.author || "",
-      content_type: details.contentType
-    });
-    const searchUrl = `${baseUrl}/?${queryParams.toString()}`;
+    const searchUrl = shelfmarkUrl(baseUrl, details);
 
     // Desktop
     const desktopContainer = document.querySelector(
