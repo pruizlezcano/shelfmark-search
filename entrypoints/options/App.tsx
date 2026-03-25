@@ -4,11 +4,15 @@ import "./style.css";
 
 export default function App() {
   const [baseUrl, setBaseUrl] = useState("");
+  const [useCombinedSearch, setUseCombinedSearch] = useState(false);
   const [status, setStatus] = useState({ msg: "", type: "" });
 
   useEffect(() => {
     storage.getItem<string>("local:baseUrl").then((val) => {
       if (val) setBaseUrl(val);
+    });
+    storage.getItem<boolean>("local:useCombinedSearch").then((val) => {
+      if (val !== null) setUseCombinedSearch(val);
     });
   }, []);
 
@@ -21,7 +25,10 @@ export default function App() {
 
     try {
       new URL(sanitizedUrl);
-      await storage.setItem("local:baseUrl", sanitizedUrl);
+      await Promise.all([
+        storage.setItem("local:baseUrl", sanitizedUrl),
+        storage.setItem("local:useCombinedSearch", useCombinedSearch)
+      ]);
       setStatus({ msg: "Settings saved!", type: "success" });
       setTimeout(() => setStatus({ msg: "", type: "" }), 3000);
     } catch (e) {
@@ -43,6 +50,20 @@ export default function App() {
         />
       </div>
       <p className="help-text">The full URL of your Shelfmark instance.</p>
+
+      <div className="checkbox-group">
+        <input
+          type="checkbox"
+          id="useCombinedSearch"
+          checked={useCombinedSearch}
+          onChange={(e) => setUseCombinedSearch(e.target.checked)}
+        />
+        <label htmlFor="useCombinedSearch">Universal Search Mode</label>
+      </div>
+      <p className="help-text">
+        Cobines title and author in a single quey string.
+      </p>
+
       <button onClick={handleSave}>Save Settings</button>
       <p className={`status-text ${status.type}`}>{status.msg}</p>
     </div>

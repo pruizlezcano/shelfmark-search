@@ -13,3 +13,23 @@ h1 {
   color: var(--text-secondary);
   margin: -12px 0 12px 0;
 }
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.checkbox-group label {
+  cursor: pointer;
+}
