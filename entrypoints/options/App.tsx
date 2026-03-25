@@ -17,21 +17,34 @@ export default function App() {
   }, []);
 
   const handleSave = async () => {
-    const sanitizedUrl = baseUrl.trim().replace(/\/$/, "");
+    let sanitizedUrl = baseUrl.trim();
     if (!sanitizedUrl) {
-      setStatus({ msg: "Please enter a URL", type: "error" });
-      return;
+      return setStatus({ msg: "Please enter a valid URL", type: "error" });
+    }
+
+    if (!/^https?:\/\//i.test(sanitizedUrl)) {
+      sanitizedUrl = `https://${sanitizedUrl}`;
+    }
+
+    const urlRegex =
+      /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%.\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%\+.~#?&\/=]*)$/;
+    if (!urlRegex.test(sanitizedUrl)) {
+      return setStatus({ msg: "Invalid URL format", type: "error" });
     }
 
     try {
-      new URL(sanitizedUrl);
+      const { origin, pathname } = new URL(sanitizedUrl);
+      const finalUrl = origin + pathname.replace(/\/+$/, "");
+
       await Promise.all([
-        storage.setItem("local:baseUrl", sanitizedUrl),
+        storage.setItem("local:baseUrl", finalUrl),
         storage.setItem("local:useCombinedSearch", useCombinedSearch)
       ]);
+
+      setBaseUrl(finalUrl);
       setStatus({ msg: "Settings saved!", type: "success" });
       setTimeout(() => setStatus({ msg: "", type: "" }), 3000);
-    } catch (e) {
+    } catch {
       setStatus({ msg: "Invalid URL format", type: "error" });
     }
   };
