@@ -5,7 +5,8 @@ export class HardcoverStrategy implements SearchStrategy {
   name = "Hardcover";
 
   match(): boolean {
-    return window.location.hostname.includes("hardcover.app");
+    const url = window.location.href;
+    return /hardcover\.app\/books\//.test(url);
   }
 
   getBookDetails(): BookDetails | null {

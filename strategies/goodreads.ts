@@ -5,7 +5,8 @@ export class GoodreadsStrategy implements SearchStrategy {
   name = "Goodreads";
 
   match(): boolean {
-    return window.location.hostname.includes("goodreads.com");
+    const url = window.location.href;
+    return /goodreads\.com\/book\/show\/\d+/.test(url);
   }
 
   getBookDetails(): BookDetails | null {
