@@ -1,3 +1,7 @@
 export default defineBackground(() => {
-  console.log('Hello background!', { id: browser.runtime.id });
+  browser.runtime.onMessage.addListener((message) => {
+    if (message.type === "OPEN_OPTIONS") {
+      browser.runtime.openOptionsPage();
+    }
+  });
 });

@@ -1,5 +1,4 @@
-import { storage } from "#imports";
-import { shelfmarkUrl } from "@/lib/shelfmarkUrl";
+import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
 import { SearchStrategy, BookDetails } from "./index";
 
 export class GoodreadsStrategy implements SearchStrategy {
@@ -29,26 +28,17 @@ export class GoodreadsStrategy implements SearchStrategy {
     const bookActionsList = document.querySelectorAll(".BookActions");
     if (bookActionsList.length === 0) return;
 
-    const baseUrl = (await storage.getItem("local:baseUrl")) as string;
-    if (!baseUrl) {
-      console.warn("Shelfmark Search: baseUrl not configured");
-      return;
-    }
-
-    const searchUrl = shelfmarkUrl(baseUrl, details);
-
     const buttonHtml = `
       <div class="BookActions__button shelfmark-button">
         <div class="ButtonGroup ButtonGroup--block">
           <div class="Button__container Button__container--block">
-            <a
-              href="${searchUrl}"
-              target="_blank"
+            <button
+              id="shelfmark-btn"
               class="Button Button--wtr Button--medium Button--block"
-              style="text-decoration: none; display: flex; align-items: center; justify-content: center;"
+              style="text-decoration: none; display: flex; align-items: center; justify-content: center"
             >
               <span class="Button__labelItem">Search in Shelfmark</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>`;
@@ -56,6 +46,11 @@ export class GoodreadsStrategy implements SearchStrategy {
     bookActionsList.forEach((container) => {
       if (!container.querySelector(".shelfmark-button")) {
         container.insertAdjacentHTML("afterbegin", buttonHtml);
+        container
+          .querySelector("#shelfmark-btn")
+          ?.addEventListener("click", (e) => {
+            handleShelfmarkClick(details);
+          });
       }
     });
   }

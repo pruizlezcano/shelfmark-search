@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { BookDetails } from "@/strategies";
-import { storage } from "#imports";
-import { shelfmarkUrl } from "@/lib/shelfmarkUrl";
+import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
 import "./style.css";
 
 export default function App() {
@@ -10,7 +9,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchDetails() {
+    async function init() {
       try {
         const tabs = await browser.tabs.query({
           active: true,
@@ -21,11 +20,8 @@ export default function App() {
             tabs[0].id,
             { type: "GET_BOOK_DETAILS" }
           );
-          if (result) {
-            setDetails(result);
-          } else {
-            setError("No book details found.");
-          }
+          if (result) setDetails(result);
+          else setError("No book details found.");
         }
       } catch (err) {
         setError("Unsupported book page.");
@@ -33,16 +29,8 @@ export default function App() {
         setLoading(false);
       }
     }
-    fetchDetails();
+    init();
   }, []);
-
-  const handleSearch = async () => {
-    if (!details) return;
-    const baseUrl = await storage.getItem<string>("local:baseUrl");
-    if (!baseUrl) return;
-    const searchUrl = shelfmarkUrl(baseUrl, details);
-    browser.tabs.create({ url: searchUrl });
-  };
 
   if (loading) {
     return (
@@ -106,7 +94,10 @@ export default function App() {
           <option value="audiobook">Audiobook</option>
         </select>
       </div>
-      <button onClick={handleSearch}>Go to Shelfmark</button>
+
+      <button onClick={() => handleShelfmarkClick(details)}>
+        Go to Shelfmark
+      </button>
     </div>
   );
 }

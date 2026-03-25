@@ -1,5 +1,4 @@
-import { storage } from "#imports";
-import { shelfmarkUrl } from "@/lib/shelfmarkUrl";
+import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
 import { SearchStrategy, BookDetails } from "./index";
 
 export class HardcoverStrategy implements SearchStrategy {
@@ -26,14 +25,6 @@ export class HardcoverStrategy implements SearchStrategy {
     const details = this.getBookDetails();
     if (!details) return;
 
-    const baseUrl = (await storage.getItem("local:baseUrl")) as string;
-    if (!baseUrl) {
-      console.warn("Shelfmark Search: baseUrl not configured");
-      return;
-    }
-
-    const searchUrl = shelfmarkUrl(baseUrl, details);
-
     // Desktop
     const desktopContainer = document.querySelector(
       ".flex.flex-col.col-span-4.lg\\:col-span-2 > .hidden.lg\\:block > div"
@@ -45,16 +36,20 @@ export class HardcoverStrategy implements SearchStrategy {
     ) {
       const desktopButtonHtml = `
         <div class="mt-2 shelfmark-button-desktop">
-          <a
-            href="${searchUrl}"
-            target="_blank"
+          <button
+            id="shelfmark-btn-desktop"
             class="inline-flex items-center justify-center rounded-lg font-semibold shadow-button transition-all bg-primary text-primary-foreground hover:opacity-90 border border-primary text-base py-2.5 px-3.5"
           >
             <span class="Button__labelItem">Search in Shelfmark</span>
-          </a>
+          </button>
         </div>`;
 
       desktopContainer.insertAdjacentHTML("beforeend", desktopButtonHtml);
+      desktopContainer
+        .querySelector("#shelfmark-btn-desktop")
+        ?.addEventListener("click", (e) => {
+          handleShelfmarkClick(details);
+        });
     }
 
     // Mobile
@@ -67,16 +62,20 @@ export class HardcoverStrategy implements SearchStrategy {
     ) {
       const mobileButtonHtml = `
         <div class="mt-2 flex justify-center shelfmark-button-mobile">
-          <a
-            href="${searchUrl}"
-            target="_blank"
+          <button
+            id="shelfmark-btn-mobile"
             class="inline-flex items-center justify-center rounded-lg font-semibold shadow-button transition-all bg-primary text-primary-foreground hover:opacity-90 border border-primary py-3 px-4 text-sm"
           >
             <span class="Button__labelItem">Shelfmark</span>
-          </a>
+          </button>
         </div>`;
 
       mobileContainer.insertAdjacentHTML("beforeend", mobileButtonHtml);
+      mobileContainer
+        .querySelector("#shelfmark-btn-mobile")
+        ?.addEventListener("click", (e) => {
+          handleShelfmarkClick(details);
+        });
     }
   }
 }
