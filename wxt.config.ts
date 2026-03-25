@@ -5,6 +5,11 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
     permissions: ["storage", "scripting", "tabs"],
+    browser_specific_settings: {
+      gecko: {
+        id: "shelfmark-search@pruizlezcano"
+      }
+    },
     options_ui: {
       page: "entrypoints/options/index.html",
       open_in_tab: true
