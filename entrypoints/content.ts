@@ -1,5 +1,6 @@
 import { GoodreadsStrategy } from "@/strategies/goodreads";
 import { HardcoverStrategy } from "@/strategies/hardcover";
+import { logger } from "@/lib/logger";
 
 export default defineContentScript({
   matches: ["*://*.goodreads.com/book/show/*", "*://hardcover.app/books/*"],
@@ -8,7 +9,7 @@ export default defineContentScript({
     const strategy = strategies.find((s) => s.match());
 
     if (strategy) {
-      console.log(`Shelfmark Search: Strategy matched: ${strategy.name}`);
+      logger.log(`Strategy matched: ${strategy.name}`);
 
       // Listen for requests from the popup
       browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -22,10 +23,7 @@ export default defineContentScript({
         try {
           await strategy.injectShelfmarkButton();
         } catch (e) {
-          console.error(
-            `Shelfmark Search: Error injecting for ${strategy.name}`,
-            e
-          );
+          logger.error(`Error injecting for ${strategy.name}`, e);
         }
       };
 

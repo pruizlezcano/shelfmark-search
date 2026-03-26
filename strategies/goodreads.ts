@@ -1,5 +1,6 @@
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
 import { SearchStrategy, BookDetails } from "./index";
+import { logger } from "@/lib/logger";
 
 export class GoodreadsStrategy implements SearchStrategy {
   name = "Goodreads";
@@ -17,7 +18,12 @@ export class GoodreadsStrategy implements SearchStrategy {
       .querySelector('[data-testid="name"]')
       ?.textContent?.trim();
 
-    if (!title) return null;
+    if (!title) {
+      logger.error("Details not found for this book");
+      return null;
+    }
+
+    logger.log({ title, author });
 
     return { title, author, contentType: "ebook" };
   }
@@ -27,7 +33,10 @@ export class GoodreadsStrategy implements SearchStrategy {
     if (!details) return;
 
     const bookActionsList = document.querySelectorAll(".BookActions");
-    if (bookActionsList.length === 0) return;
+    if (bookActionsList.length === 0) {
+      logger.error(this.name, "Can't find .BookActions");
+      return;
+    }
 
     const buttonHtml = `
       <div class="BookActions__button shelfmark-button">

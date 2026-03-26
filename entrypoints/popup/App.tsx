@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BookDetails } from "@/strategies";
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
+import { logger } from "@/lib/logger";
 import "./style.css";
 
 export default function App() {
@@ -28,7 +29,7 @@ export default function App() {
           }
         }
       } catch (err) {
-        console.log("Shelfmark: Could not fetch book details", err);
+        logger.log("Popup", "Could not fetch book details", err);
       } finally {
         setLoading(false);
       }
