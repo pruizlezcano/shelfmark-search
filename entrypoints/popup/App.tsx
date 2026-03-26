@@ -4,9 +4,12 @@ import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
 import "./style.css";
 
 export default function App() {
-  const [details, setDetails] = useState<BookDetails | null>(null);
+  const [details, setDetails] = useState<BookDetails>({
+    title: "",
+    author: "",
+    contentType: "ebook"
+  });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -20,11 +23,12 @@ export default function App() {
             tabs[0].id,
             { type: "GET_BOOK_DETAILS" }
           );
-          if (result) setDetails(result);
-          else setError("No book details found.");
+          if (result) {
+            setDetails(result);
+          }
         }
       } catch (err) {
-        setError("Unsupported book page.");
+        console.log("Shelfmark: Could not fetch book details", err);
       } finally {
         setLoading(false);
       }
@@ -41,15 +45,6 @@ export default function App() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="container">
-        <h1>Shelfmark</h1>
-        <p className="status-text error">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="container">
       <h1>Shelfmark Search</h1>
@@ -58,12 +53,11 @@ export default function App() {
         <input
           type="text"
           id="title"
-          value={details?.title || ""}
+          value={details.title}
           onChange={(e) =>
-            setDetails((prev) =>
-              prev ? { ...prev, title: e.target.value } : null
-            )
+            setDetails((prev) => ({ ...prev, title: e.target.value }))
           }
+          placeholder="Enter book title"
         />
       </div>
       <div className="input-group">
@@ -71,23 +65,23 @@ export default function App() {
         <input
           type="text"
           id="author"
-          value={details?.author || ""}
+          value={details.author}
           onChange={(e) =>
-            setDetails((prev) =>
-              prev ? { ...prev, author: e.target.value } : null
-            )
+            setDetails((prev) => ({ ...prev, author: e.target.value }))
           }
+          placeholder="Enter author name"
         />
       </div>
       <div className="input-group">
         <label htmlFor="type">Type</label>
         <select
           id="type"
-          value={details?.contentType || "ebook"}
+          value={details.contentType}
           onChange={(e) =>
-            setDetails((prev) =>
-              prev ? { ...prev, contentType: e.target.value as any } : null
-            )
+            setDetails((prev) => ({
+              ...prev,
+              contentType: e.target.value as any
+            }))
           }
         >
           <option value="ebook">eBook</option>
