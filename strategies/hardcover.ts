@@ -11,12 +11,11 @@ export class HardcoverStrategy implements SearchStrategy {
   }
 
   getBookDetails(): BookDetails | null {
-    const title = document.querySelector("h1")?.textContent?.trim();
-    const author = document
-      .querySelector(
-        "div.font-semibold:nth-child(2) > span:nth-child(1) > span:nth-child(2) > a:nth-child(2) > span:nth-child(1)"
-      )
-      ?.textContent?.trim();
+    const titleContainer = document.querySelector("h1");
+    const title = titleContainer?.textContent?.trim();
+
+    const authorContainer = titleContainer?.parentElement?.querySelector("a");
+    const author = authorContainer?.textContent?.trim();
 
     if (!title) {
       logger.error("Details not found for this book");
