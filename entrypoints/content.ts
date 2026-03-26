@@ -2,7 +2,7 @@ import { GoodreadsStrategy } from "@/strategies/goodreads";
 import { HardcoverStrategy } from "@/strategies/hardcover";
 
 export default defineContentScript({
-  matches: ["*://*/*"],
+  matches: ["*://*.goodreads.com/book/show/*", "*://hardcover.app/books/*"],
   async main() {
     const strategies = [new GoodreadsStrategy(), new HardcoverStrategy()];
     const strategy = strategies.find((s) => s.match());
