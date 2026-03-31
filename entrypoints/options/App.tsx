@@ -74,7 +74,7 @@ export default function App() {
         <label htmlFor="useCombinedSearch">Universal Search Mode</label>
       </div>
       <p className="help-text">
-        Cobines title and author in a single quey string.
+        Combines title and author in a single query string.
       </p>
 
       <button onClick={handleSave}>Save Settings</button>
