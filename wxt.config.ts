@@ -4,7 +4,7 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   manifest: {
-    permissions: ["storage", "scripting", "tabs"],
+    permissions: ["storage"],
     browser_specific_settings: {
       gecko: {
         id: "shelfmark-search@pruizlezcano",
