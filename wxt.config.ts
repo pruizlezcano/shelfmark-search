@@ -7,7 +7,10 @@ export default defineConfig({
     permissions: ["storage", "scripting", "tabs"],
     browser_specific_settings: {
       gecko: {
-        id: "shelfmark-search@pruizlezcano"
+        id: "shelfmark-search@pruizlezcano",
+        data_collection_permissions: {
+          required: ["none"]
+        }
       }
     },
     options_ui: {
