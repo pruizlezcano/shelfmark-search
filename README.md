@@ -12,6 +12,7 @@ Browser extension that adds a **Search in Shelfmark** button to book pages, so y
 
 - Goodreads (`goodreads.com/book/show/...`)
 - Hardcover (`hardcover.app/books/...`)
+- StoryGraph (`app.thestorygraph.com/books/...`)
 - More sites coming soon! Open an issue if you'd like to see support for a specific site.
 
 ## Screenshots

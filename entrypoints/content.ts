@@ -1,11 +1,20 @@
 import { GoodreadsStrategy } from "@/strategies/goodreads";
 import { HardcoverStrategy } from "@/strategies/hardcover";
+import { StorygraphStrategy } from "@/strategies/storygraph";
 import { logger } from "@/lib/logger";
 
 export default defineContentScript({
-  matches: ["*://*.goodreads.com/book/show/*", "*://hardcover.app/books/*"],
+  matches: [
+    "*://*.goodreads.com/book/show/*",
+    "*://hardcover.app/books/*",
+    "*://app.thestorygraph.com/books/*"
+  ],
   async main() {
-    const strategies = [new GoodreadsStrategy(), new HardcoverStrategy()];
+    const strategies = [
+      new GoodreadsStrategy(),
+      new HardcoverStrategy(),
+      new StorygraphStrategy()
+    ];
     const strategy = strategies.find((s) => s.match());
 
     if (strategy) {
