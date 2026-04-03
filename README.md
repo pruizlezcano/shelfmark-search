@@ -1,6 +1,6 @@
 # Shelfmark Search
 
-Browser extension that adds a **Search in Shelfmark** button to book pages, so you can jump directly from discovery sites to your Shelfmark library search.
+Browser extension that adds a **Search in Shelfmark** button to book pages, so you can jump directly from discovery sites to your [Shelfmark](https://github.com/calibrain/shelfmark) library search.
 
 ## Features
 
