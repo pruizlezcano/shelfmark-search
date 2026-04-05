@@ -144,6 +144,23 @@ https://your-shelfmark-url/?content_type=ebook&q=Dune&author=Frank%20Herbert
 - `bun run zip` - Package ZIP (Chromium)
 - `bun run zip:firefox` - Package ZIP (Firefox)
 - `bun run compile` - TypeScript check
+- `bun run test:e2e` - Build and run Playwright E2E tests
+
+## E2E Testing
+
+This project uses Playwright for extension-level E2E tests against the built Chromium bundle in `.output/chrome-mv3`.
+
+Install Chromium for Playwright (first time only):
+
+```bash
+bunx playwright install
+```
+
+Run E2E tests:
+
+```bash
+bun run test:e2e
+```
 
 ## Troubleshooting
 
