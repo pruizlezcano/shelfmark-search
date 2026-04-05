@@ -1,8 +1,9 @@
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
-import { SearchStrategy, BookDetails } from "./index";
+import { BookDetails } from "./index";
 import { logger } from "@/lib/logger";
+import { CachedBookStrategy } from "./base";
 
-export class StorygraphStrategy implements SearchStrategy {
+export class StorygraphStrategy extends CachedBookStrategy {
   name = "Storygraph";
 
   match(): boolean {
@@ -10,7 +11,7 @@ export class StorygraphStrategy implements SearchStrategy {
     return /app\.thestorygraph\.com\/books\//.test(url);
   }
 
-  getBookDetails(): BookDetails | null {
+  protected extractBookDetails(): BookDetails | null {
     const container = document.querySelector(".book-title-author-and-series");
     if (!container) {
       logger.error("Details not found for this book");

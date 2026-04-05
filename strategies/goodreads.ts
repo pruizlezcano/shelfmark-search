@@ -1,8 +1,9 @@
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
-import { SearchStrategy, BookDetails } from "./index";
+import { BookDetails } from "./index";
 import { logger } from "@/lib/logger";
+import { CachedBookStrategy } from "./base";
 
-export class GoodreadsStrategy implements SearchStrategy {
+export class GoodreadsStrategy extends CachedBookStrategy {
   name = "Goodreads";
 
   match(): boolean {
@@ -10,7 +11,7 @@ export class GoodreadsStrategy implements SearchStrategy {
     return /goodreads\.com\/book\/show\/\d+/.test(url);
   }
 
-  getBookDetails(): BookDetails | null {
+  protected extractBookDetails(): BookDetails | null {
     const title = document
       .querySelector('[data-testid="bookTitle"]')
       ?.textContent?.trim();

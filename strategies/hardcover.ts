@@ -1,8 +1,9 @@
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
-import { SearchStrategy, BookDetails } from "./index";
+import { BookDetails } from "./index";
 import { logger } from "@/lib/logger";
+import { CachedBookStrategy } from "./base";
 
-export class HardcoverStrategy implements SearchStrategy {
+export class HardcoverStrategy extends CachedBookStrategy {
   name = "Hardcover";
 
   match(): boolean {
@@ -10,7 +11,7 @@ export class HardcoverStrategy implements SearchStrategy {
     return /hardcover\.app\/books\//.test(url);
   }
 
-  getBookDetails(): BookDetails | null {
+  protected extractBookDetails(): BookDetails | null {
     const titleContainer = document.querySelector("h1");
     const title = titleContainer?.textContent?.trim();
 
