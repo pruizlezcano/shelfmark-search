@@ -49,10 +49,12 @@ Browser extension that adds a **Search in Shelfmark** button to book pages, so y
 
 ### Browser Marketplaces
 
-Install directly from the extension stores once the listings are live:
+[link-chrome]: https://chromewebstore.google.com/detail/shelfmark-search/pmnpkbmgkdlfdlkciechfpnaanigonbf 'Version published on Chrome Web Store'
+[link-firefox]: https://addons.mozilla.org/firefox/addon/shelfmark-search/ 'Version published on Mozilla Add-ons'
 
-- [Chrome Web Store](https://chromewebstore.google.com/detail/shelfmark-search/pmnpkbmgkdlfdlkciechfpnaanigonbf)
-- [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/shelfmark-search/)
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/chrome/chrome.svg" width="48" alt="Chrome" valign="middle">][link-chrome] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/pmnpkbmgkdlfdlkciechfpnaanigonbf.svg?label=%20">][link-chrome] and other Chromium browsers
+
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/firefox/firefox.svg" width="48" alt="Firefox" valign="middle">][link-firefox] [<img valign="middle" src="https://img.shields.io/amo/v/shelfmark-search.svg?label=%20">][link-firefox] on Firefox for desktop
 
 ### Download from Releases
 
