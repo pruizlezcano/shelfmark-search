@@ -1,6 +1,8 @@
-import { GoodreadsStrategy } from "@/strategies/goodreads";
-import { HardcoverStrategy } from "@/strategies/hardcover";
-import { StorygraphStrategy } from "@/strategies/storygraph";
+import {
+  GoodreadsStrategy,
+  HardcoverStrategy,
+  StorygraphStrategy
+} from "@/strategies";
 import { logger } from "@/lib/logger";
 
 export default defineContentScript({

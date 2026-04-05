@@ -1,5 +1,5 @@
 import { handleShelfmarkClick } from "@/lib/shelfmarkActions";
-import { BookDetails } from "./index";
+import type { BookDetails } from "./types";
 import { logger } from "@/lib/logger";
 import { CachedBookStrategy } from "./base";
 

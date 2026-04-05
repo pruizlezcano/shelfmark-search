@@ -1,4 +1,4 @@
-import type { BookDetails, SearchStrategy } from "./index";
+import type { BookDetails, SearchStrategy } from "./types";
 
 export abstract class CachedBookStrategy implements SearchStrategy {
   abstract name: string;
