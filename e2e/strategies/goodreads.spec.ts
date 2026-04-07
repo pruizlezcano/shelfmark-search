@@ -2,22 +2,20 @@ import { test, expect } from "../fixtures";
 import {
   expectShelfmarkSearchPage,
   GOODREADS_URL,
+  openPageAtViewport,
   setExtensionSettings,
   TIMEOUT,
+  VIEWPORTS,
   waitForBookDetails,
 } from "./helpers";
 
 test.describe("Goodreads strategy", () => {
   test.slow();
 
-  test("injects Shelfmark button", async ({ context }) => {
-    const page = await context.newPage();
-    await page.goto(GOODREADS_URL, { waitUntil: "domcontentloaded" });
-
-    await expect(page.locator(".shelfmark-button")).toHaveCount(2, {
-      timeout: TIMEOUT,
-    });
-  });
+  const getGoodreadsButtonSelector = (viewportName: string) =>
+    viewportName.startsWith("desktop")
+      ? "#shelfmark-btn-desktop"
+      : "#shelfmark-btn-mobile";
 
   test("gets book details", async ({ context }) => {
     const page = await context.newPage();
@@ -30,21 +28,36 @@ test.describe("Goodreads strategy", () => {
     expect(details.author?.toLowerCase() || "").toContain("rowling");
   });
 
-  test("clicking the Shelfmark button opens a search tab", async ({
-    context,
-  }) => {
-    const baseUrl = "https://example.com";
-    await setExtensionSettings(context, { baseUrl, useCombinedSearch: false });
+  for (const viewport of VIEWPORTS) {
+    test(`injects Shelfmark button on ${viewport.name}`, async ({
+      context,
+    }) => {
+      const page = await openPageAtViewport(context, GOODREADS_URL, viewport);
 
-    const page = await context.newPage();
-    await page.goto(GOODREADS_URL, { waitUntil: "domcontentloaded" });
+      await expect(page.locator(".shelfmark-button")).toHaveCount(2, {
+        timeout: TIMEOUT,
+      });
+      await expect(page.locator(getGoodreadsButtonSelector(viewport.name))).toHaveCount(1);
+    });
 
-    const details = await waitForBookDetails(context, page);
-    const [openedPage] = await Promise.all([
-      context.waitForEvent("page"),
-      page.locator("#shelfmark-btn").first().click(),
-    ]);
+    test(`clicking the Shelfmark button opens a search tab on ${viewport.name}`, async ({
+      context,
+    }) => {
+      const baseUrl = "https://example.com";
+      await setExtensionSettings(context, {
+        baseUrl,
+        useCombinedSearch: false,
+      });
 
-    await expectShelfmarkSearchPage(openedPage, baseUrl, details);
-  });
+      const page = await openPageAtViewport(context, GOODREADS_URL, viewport);
+      const details = await waitForBookDetails(context, page);
+
+      const [openedPage] = await Promise.all([
+        context.waitForEvent("page"),
+        page.locator(getGoodreadsButtonSelector(viewport.name)).click(),
+      ]);
+
+      await expectShelfmarkSearchPage(openedPage, baseUrl, details);
+    });
+  }
 });

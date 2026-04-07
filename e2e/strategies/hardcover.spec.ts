@@ -2,25 +2,15 @@ import { test, expect } from "../fixtures";
 import {
   expectShelfmarkSearchPage,
   HARDCOVER_URL,
+  openPageAtViewport,
   setExtensionSettings,
   TIMEOUT,
+  VIEWPORTS,
   waitForBookDetails,
 } from "./helpers";
 
 test.describe("Hardcover strategy", () => {
   test.slow();
-
-  test("injects desktop and mobile Shelfmark buttons", async ({ context }) => {
-    const page = await context.newPage();
-    await page.goto(HARDCOVER_URL, { waitUntil: "domcontentloaded" });
-
-    await expect(page.locator(".shelfmark-button-desktop")).toHaveCount(1, {
-      timeout: TIMEOUT,
-    });
-    await expect(page.locator(".shelfmark-button-mobile")).toHaveCount(1, {
-      timeout: TIMEOUT,
-    });
-  });
 
   test("gets book details", async ({ context }) => {
     const page = await context.newPage();
@@ -33,21 +23,36 @@ test.describe("Hardcover strategy", () => {
     expect(details.author?.toLowerCase() || "").toContain("rowling");
   });
 
-  test("clicking the Shelfmark button opens a search tab", async ({
-    context,
-  }) => {
-    const baseUrl = "https://example.com";
-    await setExtensionSettings(context, { baseUrl, useCombinedSearch: false });
+  for (const viewport of VIEWPORTS) {
+    test(`injects mobile Shelfmark button on ${viewport.name}`, async ({
+      context,
+    }) => {
+      const page = await openPageAtViewport(context, HARDCOVER_URL, viewport);
 
-    const page = await context.newPage();
-    await page.goto(HARDCOVER_URL, { waitUntil: "domcontentloaded" });
+      await expect(
+        page.locator(`.shelfmark-button-${viewport.name}`),
+      ).toHaveCount(1, {
+        timeout: TIMEOUT,
+      });
+    });
 
-    const details = await waitForBookDetails(context, page, 20000);
+    test(`clicking the mobile Shelfmark button opens a search tab on ${viewport.name}`, async ({
+      context,
+    }) => {
+      const baseUrl = "https://example.com";
+      await setExtensionSettings(context, {
+        baseUrl,
+        useCombinedSearch: false,
+      });
 
-    const [desktopPage] = await Promise.all([
-      context.waitForEvent("page"),
-      page.locator("#shelfmark-btn-desktop").click(),
-    ]);
-    await expectShelfmarkSearchPage(desktopPage, baseUrl, details);
-  });
+      const page = await openPageAtViewport(context, HARDCOVER_URL, viewport);
+      const details = await waitForBookDetails(context, page, 20000);
+
+      const [mobilePage] = await Promise.all([
+        context.waitForEvent("page"),
+        page.locator(`#shelfmark-btn-${viewport.name}`).click(),
+      ]);
+      await expectShelfmarkSearchPage(mobilePage, baseUrl, details);
+    });
+  }
 });
