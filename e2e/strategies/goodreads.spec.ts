@@ -1,5 +1,11 @@
 import { test, expect } from "../fixtures";
-import { GOODREADS_URL, TIMEOUT, waitForBookDetails } from "./helpers";
+import {
+  expectShelfmarkSearchPage,
+  GOODREADS_URL,
+  setExtensionSettings,
+  TIMEOUT,
+  waitForBookDetails,
+} from "./helpers";
 
 test.describe("Goodreads strategy", () => {
   test.slow();
@@ -9,7 +15,7 @@ test.describe("Goodreads strategy", () => {
     await page.goto(GOODREADS_URL, { waitUntil: "domcontentloaded" });
 
     await expect(page.locator(".shelfmark-button")).toHaveCount(2, {
-      timeout: TIMEOUT
+      timeout: TIMEOUT,
     });
   });
 
@@ -22,5 +28,23 @@ test.describe("Goodreads strategy", () => {
     expect(details.contentType).toBe("ebook");
     expect(details.title.toLowerCase()).toContain("harry potter");
     expect(details.author?.toLowerCase() || "").toContain("rowling");
+  });
+
+  test("clicking the Shelfmark button opens a search tab", async ({
+    context,
+  }) => {
+    const baseUrl = "https://example.com";
+    await setExtensionSettings(context, { baseUrl, useCombinedSearch: false });
+
+    const page = await context.newPage();
+    await page.goto(GOODREADS_URL, { waitUntil: "domcontentloaded" });
+
+    const details = await waitForBookDetails(context, page);
+    const [openedPage] = await Promise.all([
+      context.waitForEvent("page"),
+      page.locator("#shelfmark-btn").first().click(),
+    ]);
+
+    await expectShelfmarkSearchPage(openedPage, baseUrl, details);
   });
 });

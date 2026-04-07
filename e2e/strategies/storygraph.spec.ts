@@ -1,5 +1,11 @@
 import { test, expect } from "../fixtures";
-import { STORYGRAPH_URL, TIMEOUT, waitForBookDetails } from "./helpers";
+import {
+  expectShelfmarkSearchPage,
+  setExtensionSettings,
+  STORYGRAPH_URL,
+  TIMEOUT,
+  waitForBookDetails,
+} from "./helpers";
 
 test.describe("StoryGraph strategy", () => {
   test.slow();
@@ -9,10 +15,10 @@ test.describe("StoryGraph strategy", () => {
     await page.goto(STORYGRAPH_URL, { waitUntil: "domcontentloaded" });
 
     await expect(page.locator(".shelfmark-button-desktop")).toHaveCount(1, {
-      timeout: TIMEOUT
+      timeout: TIMEOUT,
     });
     await expect(page.locator(".shelfmark-button-mobile")).toHaveCount(1, {
-      timeout: TIMEOUT
+      timeout: TIMEOUT,
     });
   });
 
@@ -25,5 +31,23 @@ test.describe("StoryGraph strategy", () => {
     expect(details.contentType).toBe("ebook");
     expect(details.title.toLowerCase()).toContain("harry potter");
     expect(details.author?.toLowerCase() || "").toContain("rowling");
+  });
+
+  test("clicking the Shelfmark button opens a search tab", async ({
+    context,
+  }) => {
+    const baseUrl = "https://example.com";
+    await setExtensionSettings(context, { baseUrl, useCombinedSearch: false });
+
+    const page = await context.newPage();
+    await page.goto(STORYGRAPH_URL, { waitUntil: "domcontentloaded" });
+
+    const details = await waitForBookDetails(context, page, 20000);
+
+    const [desktopPage] = await Promise.all([
+      context.waitForEvent("page"),
+      page.locator("#shelfmark-btn-desktop").click(),
+    ]);
+    await expectShelfmarkSearchPage(desktopPage, baseUrl, details);
   });
 });

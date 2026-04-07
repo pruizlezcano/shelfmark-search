@@ -1,4 +1,4 @@
-import type { BrowserContext, Page, Worker } from "@playwright/test";
+import { expect, type BrowserContext, type Page, type Worker } from "@playwright/test";
 import type { BookDetails } from "@/strategies";
 
 export const GOODREADS_URL =
@@ -36,6 +36,39 @@ export const getBookDetailsFromActiveTab = async (
       return null;
     }
   });
+};
+
+export const setExtensionSettings = async (
+  context: BrowserContext,
+  settings: {
+    baseUrl?: string;
+    useCombinedSearch?: boolean;
+  }
+): Promise<void> => {
+  const worker = await getExtensionWorker(context);
+  await worker.evaluate(async ({ baseUrl, useCombinedSearch }) => {
+    const chromeApi = (globalThis as any).chrome;
+    if (baseUrl !== undefined) {
+      await chromeApi.storage.local.set({ baseUrl });
+    }
+    if (useCombinedSearch !== undefined) {
+      await chromeApi.storage.local.set({ useCombinedSearch });
+    }
+  }, settings);
+};
+
+export const expectShelfmarkSearchPage = async (
+  openedPage: Page,
+  expectedBaseUrl: string,
+  expectedDetails: BookDetails
+): Promise<void> => {
+  await openedPage.waitForURL((url) => url.href !== "about:blank");
+
+  const url = new URL(openedPage.url());
+  expect(url.origin + url.pathname.replace(/\/+$/, "")).toBe(expectedBaseUrl);
+  expect(url.searchParams.get("content_type")).toBe(expectedDetails.contentType);
+  expect(url.searchParams.get("q")).toBe(expectedDetails.title);
+  expect(url.searchParams.get("author")).toBe(expectedDetails.author || "");
 };
 
 export const waitForBookDetails = async (
