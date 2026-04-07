@@ -39,13 +39,16 @@ export class GoodreadsStrategy extends CachedBookStrategy {
       return;
     }
 
-    const buttonHtml = `
-      <div class="BookActions__button shelfmark-button">
+    bookActionsList.forEach((container, index) => {
+      const variant = index === 0 ? "desktop" : "mobile";
+      const buttonHtml = `
+      <div class="BookActions__button shelfmark-button shelfmark-button-${variant}">
         <div class="ButtonGroup ButtonGroup--block">
           <div class="Button__container Button__container--block">
             <button
-              id="shelfmark-btn"
+              id="shelfmark-btn-${variant}"
               class="Button Button--wtr Button--medium Button--block"
+              data-testid="shelfmark-btn-${variant}"
               style="text-decoration: none; display: flex; align-items: center; justify-content: center"
             >
               <span class="Button__labelItem">Search in Shelfmark</span>
@@ -54,12 +57,11 @@ export class GoodreadsStrategy extends CachedBookStrategy {
         </div>
       </div>`;
 
-    bookActionsList.forEach((container) => {
-      if (!container.querySelector(".shelfmark-button")) {
+      if (!container.querySelector(`.shelfmark-button-${variant}`)) {
         container.insertAdjacentHTML("afterbegin", buttonHtml);
         container
-          .querySelector("#shelfmark-btn")
-          ?.addEventListener("click", (e) => {
+          .querySelector(`#shelfmark-btn-${variant}`)
+          ?.addEventListener("click", () => {
             handleShelfmarkClick(details);
           });
       }
